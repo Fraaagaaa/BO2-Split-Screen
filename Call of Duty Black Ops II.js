@@ -1,13 +1,9 @@
 var a_lan = ["-", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51", "52", "53", "54", "55", "56", "57", "58", "59", "60", "61", "62", "63", "64", "65", "66", "67", "68", "69", "70", "71", "72", "73", "74", "75", "76", "77", "78", "79", "80", "81", "82", "83", "84", "85", "86", "87", "88", "89", "90", "91", "92", "93", "94", "95", "96", "97", "98", "99", "100", "101", "102", "103", "104", "105", "106", "107", "108", "109", "110", "111", "112", "113", "114", "115", "116", "117", "118", "119", "120", "121", "122", "123", "124", "125", "126", "127", "128", "129", "130", "131", "132", "133", "134", "135", "136", "137", "138", "139", "140", "141", "142", "143", "144", "145", "146", "147", "148", "149", "150", "151", "152", "153", "154", "155", "156", "157", "158", "159", "160", "161", "162", "163", "164", "165", "166", "167", "168", "169", "170", "171", "172", "173", "174", "175", "176", "177", "178", "179", "180", "181", "182", "183", "184", "185", "186", "187", "188", "189", "190", "191", "192", "193", "194", "195", "196", "197", "198", "199", "200"];
-var a_music = ["Yes", "No"];
 var a_fps = ["144", "30", "45", "90", "120", "60", "200", "125", "250"];
-var a_fov = ["90", "100", "110", "65"];
 var a_players = ["2", "3", "4", "5", "6", "7", "8"];
 
 Game.AddOption("Select the number of players (only for Zombies)", "", "Players", a_players);
 Game.AddOption("Select the FPS Cap the game will use", "", "FPS", a_fps);
-Game.AddOption("Select your preferred FOV", "", "FOV", a_fov);
-Game.AddOption("Enable music only in the first instance?", '"Manual/Current Setting" will not change music setting.', "Mus", a_music);
 Game.AddOption("For LAN and only for Guest PC, select the last digits of the host IP", "", "lan", a_lan);
 
 Game.FileSymlinkExclusions = ["t6mp.exe", "t6sp.exe", "t6zm.exe", "hardware_mp.chp", "user_common.cgp", "Xinputplus.ini", "xinput1_4.dll", "xinput1_3.dll", "steam_api.dll"];
@@ -15,7 +11,7 @@ Game.FileSymlinkCopyInstead = ["steam_api.dll", "steamclient.dll", "plutonium_mp
 
 // Configuración ProtoInput básica
 Game.BinariesFolder = "";
-Game.Description = "Supports both gamepads and mouse/keyboard, up to 8 player splitscreen on both Multiplayer and Zombies.\n\nIf playing with more than 4 players, be sure to lock input by pressing the end key once all the instances have finished positioning and resizing. You will also need to lock input if playing with mouse and keyboard.\n\nFor best compatibility it is advisable to close Steam.\n\nOnce all instances have finished resizing/positioning, have the first player setup a custom match and press F2 or press the SELECT+START buttons simultaneously on your gamepad to start the match, the other instances will connect shortly after automatically.\n\nBased on what you selected in the launch options, the match will be pupulated with bots according to the skill and number of bots selected.\n\nTo quickly restart the match press F3 or press the SELECT+Y buttons simultaneously on your gamepad.\n\nTo swap bumper/trigger buttons (useful for playstation gamepads) press F4 or press the Select + A buttons simultaneously on your gamepad only once you're in the match.\n\nTo play over LAN, ONLY the guest PC will need to select the last 1-3 digits of the Host PC's IP address in the launch options, then once all the instances have finished positionin/resizing, press F2 or press the SELECT+START buttons simultaneously on your gamepad to connect all the guest instances to the host PC.\n\nThe winject32-64.exes may be blocked or flagged by windows defender as potential viruses/threats, but I can guarantee they are nothing but false/positives as I got them from the following link https://www.unknowncheats.me/forum/general-programming-and-reversing/518833-winject-windows-injector.html and have been analyzed and cleared by one of their moderators.\n\nLast but not least, enjoy this amazing FPS with friends and family!";
+Game.Description = "F2 Para iniciar partida \n F3 para reiniciar la partida \nSi sólo una pantalla va a más de 30 fps suele ser causado por windows, se cambia en la configuración de windows";
 Game.ExecutableName = "t6zm.exe";
 Game.GUID = "Call of Duty Black Ops II"; 
 Game.GameName = "Call of Duty Black Ops II"; 
@@ -188,11 +184,10 @@ Game.Play = function() {
         if(System.IO.File.Exists(bPath)) Context.RunAdditionalFiles([bPath], false, 10);
     }
 
-    var FOV = Context.Options["FOV"];
     var FPS = Context.Options["FPS"];
     var Players = Context.Options["Players"];
-    Game.Hook.ForceFocusWindowName = "Plutonium T6 Zombies (r4839)"; 
-    Game.LauncherTitle = "Plutonium T6 Zombies (r4839)"; 
+    Game.Hook.ForceFocusWindowName = "Plutonium T6 Zombies (Split Screen "+ Context.PlayerID + ")"; 
+    Game.LauncherTitle = "Plutonium T6 Zombies (Split Screen " + Context.PlayerID  + ")"; 
 
     if (System.IO.File.Exists(iniPath)) {
         var inputEnabled = "true";
@@ -222,10 +217,21 @@ Game.Play = function() {
     Context.WriteTextFile(Bat, lines); 
     Context.RunAdditionalFiles(["all|" + Bat], false, 0);
 
-    if (FOV >= "0")
+    if(!System.IO.File.Exists("Plutonium\\storage\\t6\\players\\user_common.cgp.nomusic") && !System.IO.File.Exists("Plutonium\\storage\\t6\\players\\user_common.cgp.music"))
     {
-        var zm_cfg = System.IO.Path.Combine(instFolder, "Plutonium\\storage\\t6\\players\\plutonium_zm.cfg");
-        if(System.IO.File.Exists(zm_cfg)) Context.ReplaceLinesInTextFile(zm_cfg, [Context.FindLineNumberInTextFile(zm_cfg, "seta cg_fov", Nucleus.SearchType.StartsWith) + '|seta cg_fov "' + FOV + '"'], 'utf-8');
+        if (Context.PlayerID > 0)
+        {
+            musicSrc = "Config files\\user_common.cgp.nomusic";
+        }
+        else
+        {
+            musicSrc = "Config files\\user_common.cgp.music";
+        }
+        if (musicSrc != "")
+        {
+            copyFile(System.IO.Path.GetDirectoryName(musicSrc), System.IO.Path.GetFileName(musicSrc), "Plutonium\\storage\\t6\\players\\user_common.cgp");
+            copyFile(System.IO.Path.GetDirectoryName(musicSrc), System.IO.Path.GetFileName(musicSrc), "Plutonium\\storage\\t6\\players\\user_common.cgp.nomusic");
+        }
     }
 
     if (Context.AspectRatioDecimal < 1.2 && Context.NumberOfPlayers < 3)
@@ -277,18 +283,6 @@ Game.Play = function() {
         var ipTxt = Game.Folder + '\\Local IP.txt';
         Context.WriteTextFile(ipTxt, ['192.168.1.' + lan + '      ']);
     }
-
-    var Mus = Context.Options["Mus"];
-    var musicSrc = "";
-    if (Mus == "No" || (Mus == "Yes" && Context.PlayerID > 0) || (Mus == "Manual/Current Settings" && Context.PlayerID > 0))
-    {
-        musicSrc = "Config files\\user_common.cgp.nomusic";
-    }
-    else if (Mus == "Yes" && Context.PlayerID == 0)
-    {
-        musicSrc = "Config files\\user_common.cgp.music";
-    }
-    if (musicSrc != "") copyFile(System.IO.Path.GetDirectoryName(musicSrc), System.IO.Path.GetFileName(musicSrc), "Plutonium\\storage\\t6\\players\\user_common.cgp");
 
     Context.EditRegKey("HKEY_CURRENT_USER", "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers", "" + instFolder + "\\Plutonium\\bin\\plutonium-bootstrapper-win32.exe", "HIGHDPIAWARE", Nucleus.RegType.String);
 
