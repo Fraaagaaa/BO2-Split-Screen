@@ -3,7 +3,7 @@
 ### Pasos de Instalación
 
 1.  **Instalar Nucleus Co-op:** Instala el programa en la ruta `C:\NucleusApp`.
-2.  **Instalar Handlers:** Descomprime el archivo de la [descarga](https://github.com/Fraaagaaa/BO2-Split-Screen/releases/latest/download/Call.of.Duty.Black.Ops.II.Handlers.rar) directamente en `C:\NucleusApp\handlers`.
+2.  **Instalar Handlers:** Descomprime el archivo de la [descarga](https://github.com/Fraaagaaa/BO2-Split-Screen/releases/latest/download/Call.of.Duty.Black.Ops.II.rar) directamente en `C:\NucleusApp\handlers`.
 3.  **Verificación:** Asegúrate de que [Plutonium](https://plutonium.pw/) arranque de forma normal y sin errores.
 
 ### Configuración del Juego (Plutonium)
